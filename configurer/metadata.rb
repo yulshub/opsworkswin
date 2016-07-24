@@ -5,6 +5,7 @@ license 'all_rights'
 description 'Installs/Configures configurer'
 long_description 'Installs/Configures configurer'
 version '0.1.0'
+
 supports    "windows"
 
 depends "iis"
