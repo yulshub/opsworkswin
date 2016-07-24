@@ -5,7 +5,7 @@
 # Copyright (c) 2016 The Authors, All Rights Reserved.
 
 log 'message' do
-  message "#{deploy[:deploy_to]}"
+  message "A ver donde estas"
   level :info
 end
 
