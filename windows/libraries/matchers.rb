@@ -1,100 +1,16 @@
 if defined?(ChefSpec)
-  chefspec_version = Gem.loaded_specs['chefspec'].version
-  define_method = if chefspec_version < Gem::Version.new('4.1.0')
-                    ChefSpec::Runner.method(:define_runner_method)
-                  else
-                    ChefSpec.method(:define_matcher)
-                  end
-
-  define_method.call :windows_certificate
-  define_method.call :windows_package
-  define_method.call :windows_feature
-  define_method.call :windows_task
-  define_method.call :windows_path
-  define_method.call :windows_batch
-  define_method.call :windows_pagefile
-  define_method.call :windows_zipfile
-  define_method.call :windows_shortcut
-  define_method.call :windows_auto_run
-  define_method.call :windows_printer
-  define_method.call :windows_printer_port
-  define_method.call :windows_reboot
-
-  #
-  # Assert that a +windows_certificate+ resource exists in the Chef run with the
-  # action +:create+. Given a Chef Recipe that creates 'c:\test\mycert.pfx' as a
-  # +windows_certificate+:
-  #
-  #     windows_certificate 'c:\test\mycert.pfx' do
-  #       action :create
-  #     end
-  #
-  # The Examples section demonstrates the different ways to test a
-  # +windows_certificate+ resource with ChefSpec.
-  #
-  # @example Assert that a +windows_certificate+ was created
-  #   expect(chef_run).to create_windows_certificate('c:\test\mycert.pfx')
-  #
-  #
-  # @param [String, Regex] resource_name
-  #   the name of the resource to match
-  #
-  # @return [ChefSpec::Matchers::ResourceMatcher]
-  #
-  def create_windows_certificate(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:windows_certificate, :create, resource_name)
-  end
-
-  #
-  # Assert that a +windows_certificate+ resource exists in the Chef run with the
-  # action +:delete+. Given a Chef Recipe that deletes "me.acme.com" as a
-  # +windows_certificate+:
-  #
-  #     windows_certificate 'me.acme.com' do
-  #       action :delete
-  #     end
-  #
-  # The Examples section demonstrates the different ways to test a
-  # +windows_certificate+ resource with ChefSpec.
-  #
-  # @example Assert that a +windows_certificate+ was _not_ deleted
-  #   expect(chef_run).to_not delete_windows_certificate('me.acme.com')
-  #
-  #
-  # @param [String, Regex] resource_name
-  #   the name of the resource to match
-  #
-  # @return [ChefSpec::Matchers::ResourceMatcher]
-  #
-  def delete_windows_certificate(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:windows_certificate, :delete, resource_name)
-  end
-
-  #
-  # Assert that a +windows_certificate+ resource exists in the Chef run with the
-  # action +:acl_add+. Given a Chef Recipe that adds a private key acl to "me.acme.com" as a
-  # +windows_certificate+:
-  #
-  #     windows_certificate 'me.acme.com' do
-  #       private_key_acl ['acme\fred', 'pc\jane']
-  #       action :acl_add
-  #     end
-  #
-  # The Examples section demonstrates the different ways to test a
-  # +windows_certificate+ resource with ChefSpec.
-  #
-  # @example Assert that a +windows_certificate+ was _not_ removed
-  #   expect(chef_run).to add_acl_to_windows_certificate('me.acme.com').with(private_key_acl: ['acme\fred', 'pc\jane'])
-  #
-  #
-  # @param [String, Regex] resource_name
-  #   the name of the resource to match
-  #
-  # @return [ChefSpec::Matchers::ResourceMatcher]
-  #
-  def add_acl_to_windows_certificate(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:windows_certificate, :acl_add, resource_name)
-  end
+  ChefSpec::Runner.define_runner_method :windows_package
+  ChefSpec::Runner.define_runner_method :windows_feature
+  ChefSpec::Runner.define_runner_method :windows_task
+  ChefSpec::Runner.define_runner_method :windows_path
+  ChefSpec::Runner.define_runner_method :windows_batch
+  ChefSpec::Runner.define_runner_method :windows_pagefile
+  ChefSpec::Runner.define_runner_method :windows_zipfile
+  ChefSpec::Runner.define_runner_method :windows_shortcut
+  ChefSpec::Runner.define_runner_method :windows_auto_run
+  ChefSpec::Runner.define_runner_method :windows_printer
+  ChefSpec::Runner.define_runner_method :windows_printer_port
+  ChefSpec::Runner.define_runner_method :windows_reboot
 
   #
   # Assert that a +windows_package+ resource exists in the Chef run with the
@@ -152,6 +68,8 @@ if defined?(ChefSpec)
   def remove_windows_package(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_package, :remove, resource_name)
   end
+
+
 
   #
   # Assert that a +windows_feature+ resource exists in the Chef run with the
@@ -231,6 +149,8 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_feature, :delete, resource_name)
   end
 
+
+
   #
   # Assert that a +windows_task+ resource exists in the Chef run with the
   # action +:create+. Given a Chef Recipe that creates "mytask" as a
@@ -255,56 +175,6 @@ if defined?(ChefSpec)
   #
   def create_windows_task(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_task, :create, resource_name)
-  end
-
-  #
-  # Assert that a +windows_task+ resource exists in the Chef run with the
-  # action +:disable+. Given a Chef Recipe that creates "mytask" as a
-  # +windows_task+:
-  #
-  #     windows_task 'mytask' do
-  #       action :disable
-  #     end
-  #
-  # The Examples section demonstrates the different ways to test a
-  # +windows_task+ resource with ChefSpec.
-  #
-  # @example Assert that a +windows_task+ was disabled
-  #   expect(chef_run).to disable_windows_task('mytask')
-  #
-  #
-  # @param [String, Regex] resource_name
-  #   the name of the resource to match
-  #
-  # @return [ChefSpec::Matchers::ResourceMatcher]
-  #
-  def disable_windows_task(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:windows_task, :disable, resource_name)
-  end
-
-  #
-  # Assert that a +windows_task+ resource exists in the Chef run with the
-  # action +:enable+. Given a Chef Recipe that creates "mytask" as a
-  # +windows_task+:
-  #
-  #     windows_task 'mytask' do
-  #       action :enable
-  #     end
-  #
-  # The Examples section demonstrates the different ways to test a
-  # +windows_task+ resource with ChefSpec.
-  #
-  # @example Assert that a +windows_task+ was enabled
-  #   expect(chef_run).to enable_windows_task('mytask')
-  #
-  #
-  # @param [String, Regex] resource_name
-  #   the name of the resource to match
-  #
-  # @return [ChefSpec::Matchers::ResourceMatcher]
-  #
-  def enable_windows_task(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:windows_task, :enable, resource_name)
   end
 
   #
@@ -382,6 +252,8 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_task, :change, resource_name)
   end
 
+
+
   #
   # Assert that a +windows_path+ resource exists in the Chef run with the
   # action +:add+. Given a Chef Recipe that adds "C:\7-Zip" to the Windows
@@ -432,6 +304,8 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_path, :remove, resource_name)
   end
 
+
+
   #
   # Assert that a +windows_batch+ resource exists in the Chef run with the
   # action +:run+. Given a Chef Recipe that runs a batch script
@@ -460,6 +334,8 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_batch, :run, resource_name)
   end
 
+
+
   #
   # Assert that a +windows_pagefile+ resource exists in the Chef run with the
   # action +:set+. Given a Chef Recipe that sets a pagefile
@@ -486,6 +362,8 @@ if defined?(ChefSpec)
   def set_windows_pagefile(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_pagefile, :set, resource_name)
   end
+
+
 
   #
   # Assert that a +windows_zipfile+ resource exists in the Chef run with the
@@ -539,6 +417,7 @@ if defined?(ChefSpec)
   def zip_windows_zipfile_to(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:windows_zipfile, :zip, resource_name)
   end
+
 
   # All the other less commonly used LWRPs
   def create_windows_shortcut(resource_name)

@@ -1,12 +1,12 @@
 #
 # Author:: Doug MacEachern (<dougm@vmware.com>)
-# Author:: Seth Chisamore (<schisamo@chef.io>)
+# Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Author:: Paul Morton (<pmorton@biaprotect.com>)
 # Cookbook Name:: windows
 # Provider:: registry
 #
 # Copyright:: 2010, VMware, Inc.
-# Copyright:: 2011-2015, Chef Software, Inc.
+# Copyright:: 2011, Opscode, Inc.
 # Copyright:: 2011, Business Intelligence Associates, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,18 +21,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-use_inline_resources if defined?(use_inline_resources)
 
 include Windows::RegistryHelper
 
 action :create do
-  updated = registry_update(:create)
-  new_resource.updated_by_last_action(updated)
+  registry_update(:create)
 end
 
 action :modify do
-  updated = registry_update(:open)
-  new_resource.updated_by_last_action(updated)
+  registry_update(:open)
 end
 
 action :force_modify do
@@ -40,22 +37,20 @@ action :force_modify do
   Timeout.timeout(120) do
     @new_resource.values.each do |value_name, value_data|
       i = 1
-      until i > 5
+      until i > 5 do
         desired_value_data = value_data
         current_value_data = get_value(@new_resource.key_name.dup, value_name.dup)
         if current_value_data.to_s == desired_value_data.to_s
           Chef::Log.debug("#{@new_resource} value [#{value_name}] desired [#{desired_value_data}] data already set. Check #{i}/5.")
-          i += 1
+          i+=1
         else
           Chef::Log.debug("#{@new_resource} value [#{value_name}] current [#{current_value_data}] data not equal to desired [#{desired_value_data}] data. Setting value and restarting check loop.")
           begin
-            updated = registry_update(:open)
-            new_resource.updated_by_last_action(updated)
+            registry_update(:open)
           rescue Exception
-            updated = registry_update(:create)
-            new_resource.updated_by_last_action(updated)
+            registry_update(:create)
           end
-          i = 0 # start count loop over
+          i=0 # start count loop over
         end
       end
     end
@@ -64,13 +59,14 @@ action :force_modify do
 end
 
 action :remove do
-  delete_value(@new_resource.key_name, @new_resource.values)
-  new_resource.updated_by_last_action(true)
+  delete_value(@new_resource.key_name,@new_resource.values)
 end
 
 private
-
 def registry_update(mode)
+
   Chef::Log.debug("Registry Mode (#{mode})")
-  updated = set_value(mode, @new_resource.key_name, @new_resource.values, @new_resource.type)
+  updated = set_value(mode,@new_resource.key_name,@new_resource.values,@new_resource.type)
+  @new_resource.updated_by_last_action(updated)
+
 end
