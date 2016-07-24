@@ -9,6 +9,23 @@ log 'message' do
   level :info
 end
 
+Chef::Log.info "About to search apps"
+
+# Search apps to be deployed. Without deploy:true filter all apps would be returned.
+apps = search(:aws_opsworks_app, "deploy:true") rescue []
+Chef::Log.info "Found #{apps.size} apps to deploy on the stack. Assuming they are all Node.JS apps."
+
+apps.each do |app|
+  Chef::Log.info "Deploying #{app["shortname"]}."
+
+  app_source = app["app_source"]
+  app_checkout = ::File.join(Chef::Config["file_cache_path"], app["shortname"])
+
+end
+
+
+
+
 
 #node[:deploy].each do |app_name, deploy|
 #   file "c:\\inetput\\wwwroot\\index.html" do
