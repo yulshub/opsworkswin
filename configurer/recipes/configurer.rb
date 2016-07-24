@@ -11,7 +11,7 @@ end
 
 Chef::Log.info "Buscando aplicaciones"
 
-apps = search(:aws_opsworks_app, "configure:true") rescue []
+apps = search("aws_opsworks_app") rescue []
 Chef::Log.info "Encontradas #{apps.size} apps para configurar en el stack."
 
 apps.each do |app|
